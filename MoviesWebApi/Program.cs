@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using MoviesWebApi.Models;
-using System.Text;
 
 namespace MoviesWebApi
 {
@@ -13,7 +10,7 @@ namespace MoviesWebApi
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<MovieContext>(options => {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionNew"));
             });
 
 
