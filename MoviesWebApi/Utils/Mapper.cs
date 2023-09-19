@@ -14,4 +14,9 @@ public static class Mapper
     {
         return new MovieResponse(){ Id = movie.Id, Genre = movie.Genre, Title = movie.Title, ReleaseDate = movie.ReleaseDate};
     }
+    
+    public static IEnumerable<MovieResponse> Convert(IEnumerable<Movie> movies)
+    {
+        return movies.Select(a => Convert(a));
+    }
 }

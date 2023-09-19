@@ -19,15 +19,14 @@ namespace MoviesWebApi.Controllers
 
         // GET api/Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<IEnumerable<MovieResponse>> GetMovies()
         {
-            if (_dbContext.Movies == null)
-            {
-                return NotFound();
-            }
-            
+            // if (_dbContext.Movies == null)
+            // {
+            //     return NotFound();
+            // }
 
-            return await _dbContext.Movies.ToListAsync();
+            return Mapper.Convert(await _dbContext.Movies.ToListAsync());
         }
 
         // GET api/Movies/id
