@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MoviesWebApi.Models;
+using MoviesWebApi.Database;
 
 namespace MoviesWebApi
 {
@@ -10,7 +11,7 @@ namespace MoviesWebApi
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<MovieContext>(options => {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionNew"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
 

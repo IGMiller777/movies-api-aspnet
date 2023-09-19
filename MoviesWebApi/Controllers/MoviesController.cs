@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesWebApi.Models;
+using MoviesWebApi.Database;
+using MoviesWebApi.Utils;
 
 namespace MoviesWebApi.Controllers
 {
@@ -24,13 +25,14 @@ namespace MoviesWebApi.Controllers
             {
                 return NotFound();
             }
+            
 
             return await _dbContext.Movies.ToListAsync();
         }
 
         // GET api/Movies/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<MovieResponse>> GetMovie(int id)
         {
             if (_dbContext.Movies == null)
             {
@@ -42,18 +44,27 @@ namespace MoviesWebApi.Controllers
             {
                 return NotFound();
             }
-
-            return movie;
+            
+            return Mapper.Convert(movie);
         }
 
         // POST Movie
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<MovieResponse>> PostMovie(MovieRequest movieRequest)
         {
-            _dbContext.Movies.Add(movie);
-            await _dbContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
+            try
+            {
+                var movie = Mapper.Convert(movieRequest);
+                _dbContext.Movies.Add(movie);
+                await _dbContext.SaveChangesAsync();
+                
+                return Mapper.Convert(movie);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         // Put api/Movie/id

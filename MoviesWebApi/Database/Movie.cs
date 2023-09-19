@@ -1,4 +1,4 @@
-﻿namespace MoviesWebApi.Models
+﻿namespace MoviesWebApi.Database
 {
     public class Movie
     {

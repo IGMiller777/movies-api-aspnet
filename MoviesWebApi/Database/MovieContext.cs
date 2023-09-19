@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace MoviesWebApi.Models
+namespace MoviesWebApi.Database
 {
     public class MovieContext : DbContext
     {
