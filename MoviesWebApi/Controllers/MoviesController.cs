@@ -4,7 +4,7 @@ using MoviesWebApi.Models;
 using MoviesWebApi.Database;
 using MoviesWebApi.Utils;
 
-namespace MoviesWebApi.Controllers
+namespace MoviesWebApi.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,26 +19,23 @@ namespace MoviesWebApi.Controllers
 
         // GET api/Movies
         [HttpGet]
-        public async Task<IEnumerable<MovieResponse>> GetMovies()
+        public async Task<ActionResult<IEnumerable<MovieResponse>>> GetMovies()
         {
-            // if (_dbContext.Movies == null)
-            // {
-            //     return NotFound();
-            // }
+            var movies = await _dbContext.Movies.ToListAsync();
+            if (movies == null || movies.Count == 1)
+            {
+                return NotFound();
+            }
 
-            return Mapper.Convert(await _dbContext.Movies.ToListAsync());
+            return Ok(Mapper.Convert(movies));
         }
 
         // GET api/Movies/id
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieResponse>> GetMovie(int id)
         {
-            if (_dbContext.Movies == null)
-            {
-                return NotFound();
-            }
-
             var movie = await _dbContext.Movies.FindAsync(id);
+
             if (movie == null)
             {
                 return NotFound();
@@ -68,14 +65,19 @@ namespace MoviesWebApi.Controllers
 
         // Put api/Movie/id
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        public async Task<IActionResult> PutMovie(int id, MovieRequest movie)
         {
-            if (id != movie.Id)
+            var existedMovie = await _dbContext.Movies.FindAsync(id);
+            
+            if (existedMovie == null)
             {
-                return BadRequest(nameof(GetMovie));
+                return NotFound($"Movie with ID: {id} not found!");
             }
 
-            _dbContext.Entry(movie).State = EntityState.Modified;
+            existedMovie.Title = movie.Title;
+            existedMovie.Genre = movie.Genre;
+            existedMovie.ReleaseDate = movie.ReleaseDate;
+            // _dbContext.Entry(movie).State = EntityState.Modified;
 
             try
             {
@@ -85,33 +87,24 @@ namespace MoviesWebApi.Controllers
             {
                 if (!isMovieExists(id))
                 {
-                    return NotFound(nameof(GetMovie));
+                    return NotFound($"Movie with ID: {id} not found!");
                 }
-                else
-                {
-                    throw;
-                }
-
             }
             return NoContent();
         }
 
         //Delete api/Movie/id
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMoveie(int id)
+        public async Task<IActionResult> DeleteMovie(int id)
         {
-            if (_dbContext.Movies == null)
+            var existedMovie = await _dbContext.Movies.FindAsync(id);
+
+            if (existedMovie == null)
             {
-                return NotFound();
+                return NotFound($"Movie with ID: {id} not found!");
             }
 
-            var movie = await _dbContext.Movies.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.Remove(movie);
+            _dbContext.Remove(existedMovie);
             await _dbContext.SaveChangesAsync();
 
             return StatusCode(200);

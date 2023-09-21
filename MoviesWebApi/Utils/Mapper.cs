@@ -7,12 +7,23 @@ public static class Mapper
 {
     public static Movie Convert(MovieRequest movieRequest)
     {
-        return new Movie(){ Genre = movieRequest.Genre, Title = movieRequest.Title, ReleaseDate = movieRequest.ReleaseDate};
+        return new Movie()
+        {
+            Genre = movieRequest.Genre, 
+            Title = movieRequest.Title,
+            ReleaseDate = movieRequest.ReleaseDate
+        };
     }
     
     public static MovieResponse Convert(Movie movie)
     {
-        return new MovieResponse(){ Id = movie.Id, Genre = movie.Genre, Title = movie.Title, ReleaseDate = movie.ReleaseDate};
+        return new MovieResponse()
+        {
+            Id = movie.Id, 
+            Genre = movie.Genre, 
+            Title = movie.Title, 
+            ReleaseDate = movie.ReleaseDate
+        };
     }
     
     public static IEnumerable<MovieResponse> Convert(IEnumerable<Movie> movies)
